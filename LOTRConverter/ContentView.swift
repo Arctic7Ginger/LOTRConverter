@@ -11,8 +11,13 @@ struct ContentView: View {
     
     // Stored properties
     @State var showExchangeInfo = false
+    @State var showSelectCurrency = false
+    
     @State var leftAmount = ""
     @State var rightAmount = ""
+    
+    @FocusState var leftTyping
+    @FocusState var rightTyping
     
     @State var leftCurrency  = Currency.silverPiece
     @State var rightCurrency: Currency = .goldPiece
@@ -54,12 +59,22 @@ struct ContentView: View {
                             
                         }
                         .padding(.bottom, -5)
+                        .onTapGesture {
+                            showSelectCurrency.toggle()
+                        }
                         
                         // Text field
                         // Bind property to view
                         TextField("Amount", text: $leftAmount)
                             .textFieldStyle(.roundedBorder)
-//                            .padding(.bottom, -5)
+                            .focused($leftTyping)
+                            .onChange(of: leftAmount) {
+                                if leftTyping {
+                                    rightAmount = leftCurrency.convert(leftAmount, to:
+                                                                        rightCurrency)
+                                }
+                                                     
+                            }
                     }
                     
                     // Equal sign
@@ -84,12 +99,23 @@ struct ContentView: View {
                                 .frame(width: 33)
                         }
                         .padding(.bottom, -5)
+                        .onTapGesture {
+                            showSelectCurrency.toggle()
+                        }
                         
                         // Text field
                         // Bind property to view
                         TextField("Amount", text: $rightAmount)
                             .textFieldStyle(.roundedBorder)
                             .multilineTextAlignment(.trailing)
+                            .focused($rightTyping)
+                            .onChange(of: rightAmount) {
+                                if rightTyping {
+                                    leftAmount = rightCurrency
+                                        .convert(rightAmount, to:
+                                                    leftCurrency)
+                                }
+                            }
                     }
                 }
                 .padding()
@@ -118,6 +144,10 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showExchangeInfo) {
             ExchangeInfo()
+        }
+        .sheet(isPresented: $showSelectCurrency) {
+            SelectCurrency(topCurrency: $leftCurrency,
+            bottomCurrency: $rightCurrency)
         }
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct IconGrid: View {
     
-    @State var currency: Currency
+    @Binding var currency: Currency
     
     var body: some View {
         
@@ -28,7 +28,7 @@ struct IconGrid: View {
                     CurrencyIcon(currencyImage: currency.image, currencyName: currency.name)
                         .onTapGesture {
                             self.currency = currency
-                            print("IconGrid Currency: \(self.currency)")
+//                            print("IconGrid Currency: \(self.currency)")
                         }
                 }
             }
@@ -37,7 +37,8 @@ struct IconGrid: View {
 }
 
 #Preview {
-    //@Previewable @State var currency: Currency = .silverPiece
-    IconGrid(currency: .silverPiece)
+    @Previewable @State var currency: Currency = .silverPiece
+    
+    IconGrid(currency: $currency)
 }
 
