@@ -9,7 +9,9 @@ import SwiftUI
 
 struct SelectCurrency: View {
     @Environment(\.dismiss) var dismiss
-    @State var currency: Currency
+    
+    @State var leftCurrency: Currency
+    @State var rightCurrency: Currency
     
     var body: some View {
     
@@ -24,38 +26,17 @@ struct SelectCurrency: View {
                 // Text
                 Text("Select the currency you are starting with:")
                     .fontWeight(.bold)
-                    
                 
                 // Currency icons
-                LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
-                    ForEach(Currency.allCases) { currency in
-                        if self.currency == currency {
-                            CurrencyIcon(currencyImage: currency.image, currencyName: currency.name)
-                                .shadow(color: .black, radius: 10)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 25)
-                                        .stroke(lineWidth: 3)
-                                        .opacity(0.5)
-                                }
-                        } else {
-                            CurrencyIcon(currencyImage: currency.image, currencyName: currency.name)
-                                .onTapGesture {
-                                    self.currency = currency
-                                }
-                        }
-                    }
-                }
-                
-//                .padding(3)
-//                .frame(width: 100, height: 100)
-//                .background(.brown)
-//                .clipShape(.rect(cornerRadius: 25))
-                
+                IconGrid(currency: leftCurrency)
+                                    
                 // Text
                 Text("Select the currency you would like to convert to:")
                     .fontWeight(.bold)
+                    .padding(.top)
                     
                 // Currency icons
+                IconGrid(currency: rightCurrency)
                 
                 // Done button
                 Button("Done") {
@@ -70,11 +51,12 @@ struct SelectCurrency: View {
             }
             .padding()
             .multilineTextAlignment(.center)
+            .foregroundStyle(.black)
         }
     }
 }
 
 #Preview {
-    SelectCurrency(currency: .silverPiece)
+    SelectCurrency(leftCurrency: .silverPenny, rightCurrency: .goldPenny)
 }
  
